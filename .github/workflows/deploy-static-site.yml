@@ -1,0 +1,28 @@
+name: Deploy Static Website
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Target environment (dev or prod)"
+        required: true
+        default: "prod"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.environment || 'dev' }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Simulate Deployment
+        run: |
+          echo "Deploying to environment: ${{ github.job }}"
+          mkdir -p deployed/${{ github.job }}
+          cp index.html deployed/${{ github.job }}/index.html
+          echo "Website deployed to the ${{ github.job }} environment."
